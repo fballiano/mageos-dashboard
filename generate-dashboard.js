@@ -90,11 +90,6 @@ function generateHTML(data) {
             padding: 1rem;
           }
 
-          article {
-            margin-bottom: 1rem;
-            padding: 1rem;
-          }
-
           h1 { font-size: 1.75rem; }
           h3 { font-size: 1.25rem; margin: 0; }
           h4 { font-size: 1rem; margin: 0.75rem 0 0.5rem 0; }
@@ -131,18 +126,16 @@ function generateHTML(data) {
             margin: 0.5rem 0 1.5rem 0;
           }
 
-          article {
-            background: var(--card-background-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-box-shadow);
-          }
-
           a {
             text-decoration: none;
           }
 
           a:hover {
             text-decoration: underline;
+          }
+
+          article[data-theme="light"] {
+            margin-bottom: 1rem;
           }
         </style>
       </head>
@@ -153,8 +146,10 @@ function generateHTML(data) {
         </header>
         <main class="container">
           ${activeRepos.map(repo => `
-            <article>
-              <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
+            <article data-theme="light">
+              <header>
+                <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
+              </header>
               ${repo.issues.totalCount > 0 ? `
                 <div class="issues">
                   <h4>Open Issues (${repo.issues.totalCount})</h4>
