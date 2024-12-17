@@ -85,7 +85,7 @@ function generateHTML(data) {
           .container {
             max-width: 1400px;
           }
-
+        
           .label { 
             display: inline-block;
             padding: 0.15rem 0.5rem;
@@ -93,46 +93,49 @@ function generateHTML(data) {
             font-size: 0.75em;
             margin: 0.15rem 0.15rem 0.15rem 0;
           }
-
+        
           .last-update {
             text-align: right;
             color: #6c757d;
             font-size: 0.8em;
             margin: 0.5rem 0 1.5rem 0;
           }
-
+        
           .card {
             height: 100%;
           }
-
+        
           .table {
             font-size: 0.9rem;
             margin-bottom: 0;
+            table-layout: fixed;
+            width: 100%;
           }
-
+        
           .table td {
             vertical-align: middle;
+            width: 100%;
+            max-width: 0; /* This is crucial for text-overflow to work */
           }
-
+        
           .card-body {
             padding: 1rem 0;
           }
-
+        
           .card-title {
             padding: 0 1rem;
           }
-
+        
           .table-title {
             padding: 0.5rem 1rem;
             margin-bottom: 0;
             border-top: 1px solid #dee2e6;
           }
-
+        
           .truncate-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100%;
             display: block;
           }
         </style>
