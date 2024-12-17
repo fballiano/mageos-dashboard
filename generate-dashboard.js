@@ -65,68 +65,25 @@ function generateHTML(data) {
     const repos = data.data.organization.repositories.nodes;
     const lastUpdate = new Date().toISOString();
 
-    // Filter repos with open issues or PRs
     const activeRepos = repos.filter(repo =>
         repo.issues.totalCount > 0 || repo.pullRequests.totalCount > 0
     );
 
     return `
     <!DOCTYPE html>
-    <html lang="en" data-theme="light">
+    <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Mage-OS Dashboard</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-          :root {
-            --spacing: 0.75rem;
-            --typography-spacing-vertical: 1rem;
-          }
-          
           body { 
-            max-width: 1400px; 
-            margin: 0 auto; 
             padding: 1rem;
           }
-
-          h1 { font-size: 1.75rem; }
-          h3 { font-size: 1.25rem; margin: 0; }
-          h4 { font-size: 1rem; margin: 0.75rem 0 0.5rem 0; }
-
-          .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-          }
-
-          @media (max-width: 768px) {
-            .grid-container {
-              grid-template-columns: 1fr;
-            }
-          }
-
-          .issues, .prs { 
-            margin-top: 0.75rem;
-          }
-
-          ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-
-          li { 
-            padding: 0.5rem;
-            margin: 0.35rem 0;
-            background: var(--card-sectionning-background-color);
-            border-radius: var(--border-radius);
-          }
-
-          .date { 
-            color: var(--muted-color);
-            font-size: 0.8em;
-            margin-top: 0.25rem;
+          
+          .container {
+            max-width: 1400px;
           }
 
           .label { 
@@ -139,80 +96,119 @@ function generateHTML(data) {
 
           .last-update {
             text-align: right;
-            color: var(--muted-color);
+            color: #6c757d;
             font-size: 0.8em;
             margin: 0.5rem 0 1.5rem 0;
           }
 
-          a {
-            text-decoration: none;
+          .card {
+            height: 100%;
           }
 
-          a:hover {
-            text-decoration: underline;
+          .table-responsive {
+            margin-top: 1rem;
           }
 
-          article[data-theme="light"] {
-            margin-bottom: 0;
+          .table {
+            font-size: 0.9rem;
+          }
+
+          .table td {
+            vertical-align: middle;
           }
         </style>
       </head>
       <body>
-        <header class="container">
-          <h1>Mage-OS Dashboard</h1>
-          <p class="last-update">Last updated: ${new Date(lastUpdate).toLocaleString()}</p>
-        </header>
-        <main class="container">
-          <div class="grid-container">
+        <div class="container">
+          <header class="mb-4">
+            <h1 class="display-6">Mage-OS Dashboard</h1>
+            <p class="last-update">Last updated: ${new Date(lastUpdate).toLocaleString()}</p>
+          </header>
+          
+          <div class="row row-cols-1 row-cols-md-2 g-4">
             ${activeRepos.map(repo => `
-              <article data-theme="light">
-                <header>
-                  <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
-                </header>
-                ${repo.issues.totalCount > 0 ? `
-                  <div class="issues">
-                    <h4>Open Issues (${repo.issues.totalCount})</h4>
-                    <ul>
-                      ${repo.issues.nodes.map(issue => `
-                        <li>
-                          <a href="${issue.url}" target="_blank">${issue.title}</a>
-                          ${issue.labels.nodes.length > 0 ? `
-                            <div>
-                              ${issue.labels.nodes.map(label => `
-                                <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
-                              `).join('')}
-                            </div>
-                          ` : ''}
-                          <div class="date">
-                            Created: ${new Date(issue.createdAt).toLocaleDateString()}
-                            | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
-                          </div>
-                        </li>
-                      `).join('')}
-                    </ul>
+              <div class="col">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h3 class="card-title h5">
+                      <a href="${repo.url}" class="text-decoration-none" target="_blank">${repo.name}</a>
+                    </h3>
+                    
+                    ${repo.issues.totalCount > 0 ? `
+                      <div class="table-responsive">
+                        <h4 class="h6 mt-3">Open Issues (${repo.issues.totalCount})</h4>
+                        <table class="table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th>Issue</th>
+                              <th>Dates</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${repo.issues.nodes.map(issue => `
+                              <tr>
+                                <td>
+                                  <a href="${issue.url}" class="text-decoration-none" target="_blank">${issue.title}</a>
+                                  ${issue.labels.nodes.length > 0 ? `
+                                    <div>
+                                      ${issue.labels.nodes.map(label => `
+                                        <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
+                                      `).join('')}
+                                    </div>
+                                  ` : ''}
+                                </td>
+                                <td>
+                                  <small class="text-muted">
+                                    Created: ${new Date(issue.createdAt).toLocaleDateString()}<br>
+                                    Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
+                                  </small>
+                                </td>
+                              </tr>
+                            `).join('')}
+                          </tbody>
+                        </table>
+                      </div>
+                    ` : ''}
+                    
+                    ${repo.pullRequests.totalCount > 0 ? `
+                      <div class="table-responsive">
+                        <h4 class="h6 mt-3">Open Pull Requests (${repo.pullRequests.totalCount})</h4>
+                        <table class="table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th>Pull Request</th>
+                              <th>Author</th>
+                              <th>Dates</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${repo.pullRequests.nodes.map(pr => `
+                              <tr>
+                                <td>
+                                  <a href="${pr.url}" class="text-decoration-none" target="_blank">${pr.title}</a>
+                                </td>
+                                <td>
+                                  <small>${pr.author.login}</small>
+                                </td>
+                                <td>
+                                  <small class="text-muted">
+                                    Created: ${new Date(pr.createdAt).toLocaleDateString()}<br>
+                                    Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
+                                  </small>
+                                </td>
+                              </tr>
+                            `).join('')}
+                          </tbody>
+                        </table>
+                      </div>
+                    ` : ''}
                   </div>
-                ` : ''}
-                ${repo.pullRequests.totalCount > 0 ? `
-                  <div class="prs">
-                    <h4>Open Pull Requests (${repo.pullRequests.totalCount})</h4>
-                    <ul>
-                      ${repo.pullRequests.nodes.map(pr => `
-                        <li>
-                          <a href="${pr.url}" target="_blank">${pr.title}</a>
-                          <div class="date">
-                            By: ${pr.author.login}
-                            | Created: ${new Date(pr.createdAt).toLocaleDateString()}
-                            | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
-                          </div>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
-                ` : ''}
-              </article>
+                </div>
+              </div>
             `).join('')}
           </div>
-        </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
       </body>
     </html>
   `;
