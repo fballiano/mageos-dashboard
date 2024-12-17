@@ -84,6 +84,8 @@ function generateHTML(data) {
           
           .container {
             max-width: 1400px;
+            columns: 2;
+            column-gap: 1.5rem;
           }
         
           .label { 
@@ -101,6 +103,10 @@ function generateHTML(data) {
         
           .card {
             height: 100%;
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            width: 100%;
           }
         
           .table {
@@ -114,6 +120,10 @@ function generateHTML(data) {
             vertical-align: middle;
             width: 100%;
             max-width: 0;
+          }
+
+          .card .table:last-child tr:last-child td {
+            border-bottom: none;
           }
         
           .card-body {
