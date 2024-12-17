@@ -82,7 +82,7 @@ function generateHTML(data) {
             padding: 1rem;
           }
           
-          .2columns {
+          .two-columns {
             max-width: 1400px;
             columns: 2;
             column-gap: 1.5rem;
@@ -155,7 +155,7 @@ function generateHTML(data) {
             <p class="last-update">Last updated: ${new Date(lastUpdate).toLocaleString()}</p>
           </header>
           
-          <div class="2columns">
+          <div class="two-columns">
             ${activeRepos.map(repo => `
               <div class="col">
                 <div class="card h-100">
