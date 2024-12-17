@@ -1,4 +1,3 @@
-// dashboard-generator.js
 import { writeFile } from 'fs/promises';
 import { mkdir } from 'fs/promises';
 
@@ -63,10 +62,15 @@ async function fetchOrgData() {
 }
 
 function generateHTML(data) {
-  const repos = data.data.organization.repositories.nodes;
-  const lastUpdate = new Date().toISOString();
-  
-  return `
+    const repos = data.data.organization.repositories.nodes;
+    const lastUpdate = new Date().toISOString();
+
+    // Filter repos with open issues or PRs
+    const activeRepos = repos.filter(repo =>
+        repo.issues.totalCount > 0 || repo.pullRequests.totalCount > 0
+    );
+
+    return `
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -119,49 +123,53 @@ function generateHTML(data) {
         <main class="container">
           <div class="stats">
             <div class="stat-box">
-              <h4>Total Repositories</h4>
-              <strong>${repos.length}</strong>
+              <h4>Active Repositories</h4>
+              <strong>${activeRepos.length}</strong>
             </div>
             <div class="stat-box">
               <h4>Total Open Issues</h4>
-              <strong>${repos.reduce((acc, repo) => acc + repo.issues.totalCount, 0)}</strong>
+              <strong>${activeRepos.reduce((acc, repo) => acc + repo.issues.totalCount, 0)}</strong>
             </div>
             <div class="stat-box">
               <h4>Total Open PRs</h4>
-              <strong>${repos.reduce((acc, repo) => acc + repo.pullRequests.totalCount, 0)}</strong>
+              <strong>${activeRepos.reduce((acc, repo) => acc + repo.pullRequests.totalCount, 0)}</strong>
             </div>
           </div>
-          ${repos.map(repo => `
+          ${activeRepos.map(repo => `
             <article class="repo">
               <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
-              <div class="issues">
-                <h4>Open Issues (${repo.issues.totalCount})</h4>
-                ${repo.issues.nodes.map(issue => `
-                  <div class="item">
-                    <a href="${issue.url}" target="_blank">${issue.title}</a>
-                    <div class="date">
-                      Created: ${new Date(issue.createdAt).toLocaleDateString()}
-                      | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
+              ${repo.issues.totalCount > 0 ? `
+                <div class="issues">
+                  <h4>Open Issues (${repo.issues.totalCount})</h4>
+                  ${repo.issues.nodes.map(issue => `
+                    <div class="item">
+                      <a href="${issue.url}" target="_blank">${issue.title}</a>
+                      <div class="date">
+                        Created: ${new Date(issue.createdAt).toLocaleDateString()}
+                        | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
+                      </div>
+                      ${issue.labels.nodes.map(label => `
+                        <span class="label" style="background: #${label.color}30; color: #${label.color};">${label.name}</span>
+                      `).join('')}
                     </div>
-                    ${issue.labels.nodes.map(label => `
-                      <span class="label" style="background: #${label.color}30; color: #${label.color};">${label.name}</span>
-                    `).join('')}
-                  </div>
-                `).join('')}
-              </div>
-              <div class="prs">
-                <h4>Open Pull Requests (${repo.pullRequests.totalCount})</h4>
-                ${repo.pullRequests.nodes.map(pr => `
-                  <div class="item">
-                    <a href="${pr.url}" target="_blank">${pr.title}</a>
-                    <div class="date">
-                      Created: ${new Date(pr.createdAt).toLocaleDateString()}
-                      | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
-                      | By: ${pr.author.login}
+                  `).join('')}
+                </div>
+              ` : ''}
+              ${repo.pullRequests.totalCount > 0 ? `
+                <div class="prs">
+                  <h4>Open Pull Requests (${repo.pullRequests.totalCount})</h4>
+                  ${repo.pullRequests.nodes.map(pr => `
+                    <div class="item">
+                      <a href="${pr.url}" target="_blank">${pr.title}</a>
+                      <div class="date">
+                        Created: ${new Date(pr.createdAt).toLocaleDateString()}
+                        | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
+                        | By: ${pr.author.login}
+                      </div>
                     </div>
-                  </div>
-                `).join('')}
-              </div>
+                  `).join('')}
+                </div>
+              ` : ''}
             </article>
           `).join('')}
         </main>
