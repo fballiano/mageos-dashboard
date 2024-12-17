@@ -19,7 +19,7 @@ jobs:
       - name: Generate Dashboard
         run: npm run build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -28,4 +28,4 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: mage-os-dashboard
           directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ secrets.GH_TOKEN }}
