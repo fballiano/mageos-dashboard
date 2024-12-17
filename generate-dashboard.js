@@ -105,16 +105,35 @@ function generateHTML(data) {
             height: 100%;
           }
 
-          .table-responsive {
-            margin-top: 1rem;
-          }
-
           .table {
             font-size: 0.9rem;
+            margin-bottom: 0;
           }
 
           .table td {
             vertical-align: middle;
+          }
+
+          .card-body {
+            padding: 1rem 0;
+          }
+
+          .card-title {
+            padding: 0 1rem;
+          }
+
+          .table-title {
+            padding: 0.5rem 1rem;
+            margin-bottom: 0;
+            border-top: 1px solid #dee2e6;
+          }
+
+          .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: block;
           }
         </style>
       </head>
@@ -130,77 +149,46 @@ function generateHTML(data) {
               <div class="col">
                 <div class="card h-100">
                   <div class="card-body">
-                    <h3 class="card-title h5">
+                    <h3 class="card-title h5 mb-3">
                       <a href="${repo.url}" class="text-decoration-none" target="_blank">${repo.name}</a>
                     </h3>
                     
                     ${repo.issues.totalCount > 0 ? `
-                      <div class="table-responsive">
-                        <h4 class="h6 mt-3">Open Issues (${repo.issues.totalCount})</h4>
-                        <table class="table table-striped table-hover">
-                          <thead>
+                      <h4 class="h6 table-title">Issues</h4>
+                      <table class="table table-striped table-hover">
+                        <tbody>
+                          ${repo.issues.nodes.map(issue => `
                             <tr>
-                              <th>Issue</th>
-                              <th>Dates</th>
+                              <td>
+                                <a href="${issue.url}" class="text-decoration-none truncate-text" target="_blank" title="${issue.title}">${issue.title}</a>
+                                ${issue.labels.nodes.length > 0 ? `
+                                  <div>
+                                    ${issue.labels.nodes.map(label => `
+                                      <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
+                                    `).join('')}
+                                  </div>
+                                ` : ''}
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            ${repo.issues.nodes.map(issue => `
-                              <tr>
-                                <td>
-                                  <a href="${issue.url}" class="text-decoration-none" target="_blank">${issue.title}</a>
-                                  ${issue.labels.nodes.length > 0 ? `
-                                    <div>
-                                      ${issue.labels.nodes.map(label => `
-                                        <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
-                                      `).join('')}
-                                    </div>
-                                  ` : ''}
-                                </td>
-                                <td>
-                                  <small class="text-muted">
-                                    Created: ${new Date(issue.createdAt).toLocaleDateString()}<br>
-                                    Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
-                                  </small>
-                                </td>
-                              </tr>
-                            `).join('')}
-                          </tbody>
-                        </table>
-                      </div>
+                          `).join('')}
+                        </tbody>
+                      </table>
                     ` : ''}
                     
                     ${repo.pullRequests.totalCount > 0 ? `
-                      <div class="table-responsive">
-                        <h4 class="h6 mt-3">Open Pull Requests (${repo.pullRequests.totalCount})</h4>
-                        <table class="table table-striped table-hover">
-                          <thead>
+                      <h4 class="h6 table-title">Pull Requests</h4>
+                      <table class="table table-striped table-hover">
+                        <tbody>
+                          ${repo.pullRequests.nodes.map(pr => `
                             <tr>
-                              <th>Pull Request</th>
-                              <th>Author</th>
-                              <th>Dates</th>
+                              <td>
+                                <a href="${pr.url}" class="text-decoration-none truncate-text" target="_blank" title="${pr.title}">${pr.title}</a>
+                                <small class="text-muted d-block">by ${pr.author.login}</small>
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            ${repo.pullRequests.nodes.map(pr => `
-                              <tr>
-                                <td>
-                                  <a href="${pr.url}" class="text-decoration-none" target="_blank">${pr.title}</a>
-                                </td>
-                                <td>
-                                  <small>${pr.author.login}</small>
-                                </td>
-                                <td>
-                                  <small class="text-muted">
-                                    Created: ${new Date(pr.createdAt).toLocaleDateString()}<br>
-                                    Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
-                                  </small>
-                                </td>
-                              </tr>
-                            `).join('')}
-                          </tbody>
-                        </table>
-                      </div>
+                          `).join('')}
+                        </tbody>
+                      </table>
                     ` : ''}
                   </div>
                 </div>
