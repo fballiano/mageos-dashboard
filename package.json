@@ -1,0 +1,12 @@
+{
+  "name": "mage-os-dashboard",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node dashboard-generator.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
