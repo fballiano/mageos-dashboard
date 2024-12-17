@@ -95,10 +95,8 @@ function generateHTML(data) {
           }
         
           .last-update {
-            text-align: right;
             color: #6c757d;
             font-size: 0.8em;
-            margin: 0.5rem 0 1.5rem 0;
           }
         
           .card {
@@ -115,7 +113,7 @@ function generateHTML(data) {
           .table td {
             vertical-align: middle;
             width: 100%;
-            max-width: 0; /* This is crucial for text-overflow to work */
+            max-width: 0;
           }
         
           .card-body {
@@ -164,13 +162,6 @@ function generateHTML(data) {
                             <tr>
                               <td>
                                 <a href="${issue.url}" class="text-decoration-none truncate-text" target="_blank" title="${issue.title}">${issue.title}</a>
-                                ${issue.labels.nodes.length > 0 ? `
-                                  <div>
-                                    ${issue.labels.nodes.map(label => `
-                                      <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
-                                    `).join('')}
-                                  </div>
-                                ` : ''}
                               </td>
                             </tr>
                           `).join('')}
@@ -186,7 +177,6 @@ function generateHTML(data) {
                             <tr>
                               <td>
                                 <a href="${pr.url}" class="text-decoration-none truncate-text" target="_blank" title="${pr.title}">${pr.title}</a>
-                                <small class="text-muted d-block">by ${pr.author.login}</small>
                               </td>
                             </tr>
                           `).join('')}
