@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node dashboard-generator.js"
+    "build": "node generate-dashboard.js"
   },
   "engines": {
     "node": ">=18.0.0"
