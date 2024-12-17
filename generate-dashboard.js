@@ -118,6 +118,7 @@ function generateHTML(data) {
         
           .card-body {
             padding: 1rem 0;
+            padding-bottom: 0;
           }
         
           .card-title {
@@ -126,8 +127,7 @@ function generateHTML(data) {
         
           .table-title {
             padding: 0.5rem 1rem;
-            margin-bottom: 0;
-            border-top: 1px solid #dee2e6;
+            margin-block: 1rem 0;
           }
         
           .truncate-text {
