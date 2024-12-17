@@ -72,7 +72,7 @@ function generateHTML(data) {
 
     return `
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,27 +80,69 @@ function generateHTML(data) {
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
         <style>
           :root {
-            --primary: #1095c1;
-            --primary-hover: #086f93;
+            --spacing: 0.75rem;
+            --typography-spacing-vertical: 1rem;
           }
-          body { max-width: 1200px; margin: 0 auto; padding: 20px; }
-          .repo { margin-bottom: 2rem; padding: 1.5rem; border-radius: 8px; background: var(--card-background-color); }
-          .repo h3 { margin-top: 0; }
-          .issues, .prs { margin-top: 1rem; }
-          .item { padding: 0.8rem; margin: 0.5rem 0; border-radius: 4px; background: var(--card-sectionning-background-color); }
-          .date { color: var(--muted-color); font-size: 0.9em; }
+          
+          body { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 1rem;
+          }
+
+          article {
+            margin-bottom: 1rem;
+            padding: 1rem;
+          }
+
+          h1 { font-size: 1.75rem; }
+          h3 { font-size: 1.25rem; margin: 0; }
+          h4 { font-size: 1rem; margin: 0.75rem 0 0.5rem 0; }
+
+          .issues, .prs { 
+            margin-top: 0.75rem;
+          }
+
+          .item { 
+            padding: 0.5rem;
+            margin: 0.35rem 0;
+            background: var(--card-sectionning-background-color);
+            border-radius: var(--border-radius);
+          }
+
+          .date { 
+            color: var(--muted-color);
+            font-size: 0.8em;
+            margin-top: 0.25rem;
+          }
+
           .label { 
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin: 2px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75em;
+            margin: 0.15rem 0.15rem 0.15rem 0;
           }
+
           .last-update {
             text-align: right;
             color: var(--muted-color);
-            font-size: 0.9em;
-            margin-bottom: 1rem;
+            font-size: 0.8em;
+            margin: 0.5rem 0 1.5rem 0;
+          }
+
+          article {
+            background: var(--card-background-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-box-shadow);
+          }
+
+          a {
+            text-decoration: none;
+          }
+
+          a:hover {
+            text-decoration: underline;
           }
         </style>
       </head>
@@ -111,7 +153,7 @@ function generateHTML(data) {
         </header>
         <main class="container">
           ${activeRepos.map(repo => `
-            <article class="repo">
+            <article>
               <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
               ${repo.issues.totalCount > 0 ? `
                 <div class="issues">
@@ -119,13 +161,17 @@ function generateHTML(data) {
                   ${repo.issues.nodes.map(issue => `
                     <div class="item">
                       <a href="${issue.url}" target="_blank">${issue.title}</a>
+                      ${issue.labels.nodes.length > 0 ? `
+                        <div>
+                          ${issue.labels.nodes.map(label => `
+                            <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
+                          `).join('')}
+                        </div>
+                      ` : ''}
                       <div class="date">
                         Created: ${new Date(issue.createdAt).toLocaleDateString()}
                         | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
                       </div>
-                      ${issue.labels.nodes.map(label => `
-                        <span class="label" style="background: #${label.color}30; color: #${label.color};">${label.name}</span>
-                      `).join('')}
                     </div>
                   `).join('')}
                 </div>
@@ -137,9 +183,9 @@ function generateHTML(data) {
                     <div class="item">
                       <a href="${pr.url}" target="_blank">${pr.title}</a>
                       <div class="date">
-                        Created: ${new Date(pr.createdAt).toLocaleDateString()}
+                        By: ${pr.author.login}
+                        | Created: ${new Date(pr.createdAt).toLocaleDateString()}
                         | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
-                        | By: ${pr.author.login}
                       </div>
                     </div>
                   `).join('')}
