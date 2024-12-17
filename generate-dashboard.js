@@ -110,7 +110,13 @@ function generateHTML(data) {
             margin-top: 0.75rem;
           }
 
-          .item { 
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          li { 
             padding: 0.5rem;
             margin: 0.35rem 0;
             background: var(--card-sectionning-background-color);
@@ -166,37 +172,41 @@ function generateHTML(data) {
                 ${repo.issues.totalCount > 0 ? `
                   <div class="issues">
                     <h4>Open Issues (${repo.issues.totalCount})</h4>
-                    ${repo.issues.nodes.map(issue => `
-                      <div class="item">
-                        <a href="${issue.url}" target="_blank">${issue.title}</a>
-                        ${issue.labels.nodes.length > 0 ? `
-                          <div>
-                            ${issue.labels.nodes.map(label => `
-                              <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
-                            `).join('')}
+                    <ul>
+                      ${repo.issues.nodes.map(issue => `
+                        <li>
+                          <a href="${issue.url}" target="_blank">${issue.title}</a>
+                          ${issue.labels.nodes.length > 0 ? `
+                            <div>
+                              ${issue.labels.nodes.map(label => `
+                                <span class="label" style="background: #${label.color}15; color: #${label.color};">${label.name}</span>
+                              `).join('')}
+                            </div>
+                          ` : ''}
+                          <div class="date">
+                            Created: ${new Date(issue.createdAt).toLocaleDateString()}
+                            | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
                           </div>
-                        ` : ''}
-                        <div class="date">
-                          Created: ${new Date(issue.createdAt).toLocaleDateString()}
-                          | Updated: ${new Date(issue.updatedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    `).join('')}
+                        </li>
+                      `).join('')}
+                    </ul>
                   </div>
                 ` : ''}
                 ${repo.pullRequests.totalCount > 0 ? `
                   <div class="prs">
                     <h4>Open Pull Requests (${repo.pullRequests.totalCount})</h4>
-                    ${repo.pullRequests.nodes.map(pr => `
-                      <div class="item">
-                        <a href="${pr.url}" target="_blank">${pr.title}</a>
-                        <div class="date">
-                          By: ${pr.author.login}
-                          | Created: ${new Date(pr.createdAt).toLocaleDateString()}
-                          | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    `).join('')}
+                    <ul>
+                      ${repo.pullRequests.nodes.map(pr => `
+                        <li>
+                          <a href="${pr.url}" target="_blank">${pr.title}</a>
+                          <div class="date">
+                            By: ${pr.author.login}
+                            | Created: ${new Date(pr.createdAt).toLocaleDateString()}
+                            | Updated: ${new Date(pr.updatedAt).toLocaleDateString()}
+                          </div>
+                        </li>
+                      `).join('')}
+                    </ul>
                   </div>
                 ` : ''}
               </article>
