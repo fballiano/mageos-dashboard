@@ -76,8 +76,8 @@ function generateHTML(data) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mage-OS GitHub Dashboard</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+        <title>Mage-OS Dashboard</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
         <style>
           :root {
             --primary: #1095c1;
@@ -96,17 +96,6 @@ function generateHTML(data) {
             font-size: 0.8em;
             margin: 2px;
           }
-          .stats {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-          }
-          .stat-box {
-            background: var(--card-sectionning-background-color);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-          }
           .last-update {
             text-align: right;
             color: var(--muted-color);
@@ -117,24 +106,10 @@ function generateHTML(data) {
       </head>
       <body>
         <header class="container">
-          <h1>Mage-OS GitHub Dashboard</h1>
+          <h1>Mage-OS Dashboard</h1>
           <p class="last-update">Last updated: ${new Date(lastUpdate).toLocaleString()}</p>
         </header>
         <main class="container">
-          <div class="stats">
-            <div class="stat-box">
-              <h4>Active Repositories</h4>
-              <strong>${activeRepos.length}</strong>
-            </div>
-            <div class="stat-box">
-              <h4>Total Open Issues</h4>
-              <strong>${activeRepos.reduce((acc, repo) => acc + repo.issues.totalCount, 0)}</strong>
-            </div>
-            <div class="stat-box">
-              <h4>Total Open PRs</h4>
-              <strong>${activeRepos.reduce((acc, repo) => acc + repo.pullRequests.totalCount, 0)}</strong>
-            </div>
-          </div>
           ${activeRepos.map(repo => `
             <article class="repo">
               <h3><a href="${repo.url}" target="_blank">${repo.name}</a></h3>
